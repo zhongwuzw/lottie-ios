@@ -29,6 +29,7 @@ final class AssetLibrary: Codable, AnyInitializable, Sendable {
         decodedAssets[precompAsset.id] = precompAsset
         precompAssets[precompAsset.id] = precompAsset
       } else if let imageAsset = try? container.decode(ImageAsset.self) {
+        imageAsset.preparingImageForDisplay()
         decodedAssets[imageAsset.id] = imageAsset
         imageAssets[imageAsset.id] = imageAsset
       }
