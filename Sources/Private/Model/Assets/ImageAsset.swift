@@ -37,6 +37,9 @@ public final class ImageAsset: Asset {
     try super.init(dictionary: dictionary)
   }
 
+  // MARK: Private
+  private var image: UIImage? = nil
+
   // MARK: Public
 
   /// Image name
@@ -122,6 +125,9 @@ extension Data {
 extension ImageAsset {
   /// A `CGImage` loaded from this asset if represented using a Base 64 encoding
   var base64Image: CGImage? {
+    if self.image?.cgImage != nil {
+      return self.image?.cgImage
+    }
     guard let data = Data(imageAsset: self) else { return nil }
 
     #if canImport(UIKit)
@@ -129,5 +135,15 @@ extension ImageAsset {
     #elseif canImport(AppKit)
     return NSImage(data: data)?.lottie_CGImage
     #endif
+  }
+
+  public func preparingImageForDisplay() {
+    guard let data = Data(imageAsset: self) else { return }
+    guard let image = UIImage(data: data) else { return }
+    if #available(iOS 15.0, *) {
+      self.image = image.preparingForDisplay()
+    } else {
+      // Fallback on earlier versions
+    }
   }
 }
